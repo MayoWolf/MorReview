@@ -1,6 +1,7 @@
 import React from 'react';
 import { Unit } from '../App';
 import './VideoPlayer.css';
+import { trackVideoPlay, trackVideoPause, trackVideoEnded } from '../lib/analytics';
 
 interface VideoPlayerProps {
   unit: Unit;
@@ -15,6 +16,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ unit }) => {
           controls 
           autoPlay 
           className="main-video"
+          onPlay={() => trackVideoPlay(unit.id)}
+          onPause={() => trackVideoPause(unit.id)}
+          onEnded={() => trackVideoEnded(unit.id)}
         >
           <source src={unit.videoUrl} type="video/mp4" />
           Your browser does not support the video tag.

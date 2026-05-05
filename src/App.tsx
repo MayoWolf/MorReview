@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import Sidebar from './components/Sidebar'
 import VideoPlayer from './components/VideoPlayer'
+import { startAnalytics } from './lib/analytics'
 
 export interface Topic {
   id: string;
@@ -146,6 +147,10 @@ const units: Unit[] = [
 
 function App() {
   const [currentUnit, setCurrentUnit] = useState<Unit>(units[0]);
+
+  useEffect(() => {
+    startAnalytics();
+  }, []);
 
   return (
     <div className="app-container">
