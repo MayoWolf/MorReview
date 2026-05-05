@@ -45,11 +45,35 @@ Preview the production build locally:
 npm run preview
 ```
 
+## Video URL Configuration
+
+Video URLs are provided through environment variables so they do not live in the source code. For local development, create a `.env.local` file from `.env.example`:
+
+```bash
+cp .env.example .env.local
+```
+
+Then fill in:
+
+```bash
+VITE_UNIT_1_VIDEO_URL=...
+VITE_UNIT_2_VIDEO_URL=...
+VITE_UNIT_3_VIDEO_URL=...
+VITE_UNIT_4_VIDEO_URL=...
+VITE_UNIT_5_VIDEO_URL=...
+VITE_UNIT_6_VIDEO_URL=...
+VITE_UNIT_7_VIDEO_URL=...
+```
+
+Set the same variables in Netlify for production builds. These variables keep the URLs out of git, but because browser video playback needs the final URL, they are still visible to someone viewing network requests in the browser.
+
 ## Project Structure
 
 ```text
 src/
   App.tsx                    Unit data and main app layout
+  config/
+    videoUrls.ts             Environment-backed video URL lookup
   components/
     Sidebar.tsx              Unit navigation
     VideoPlayer.tsx          Video player and topic display
