@@ -149,7 +149,7 @@ function App() {
   const [currentUnit, setCurrentUnit] = useState<Unit>(units[0]);
 
   useEffect(() => {
-    startAnalytics();
+    return startAnalytics();
   }, []);
 
   return (

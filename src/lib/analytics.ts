@@ -2,11 +2,23 @@ const SESSION_KEY = 'mor_session_id';
 const START_TIME = Date.now();
 
 const getSessionId = () => {
-  let sessionId = sessionStorage.getItem(SESSION_KEY);
+  let sessionId = null;
+
+  try {
+    sessionId = sessionStorage.getItem(SESSION_KEY);
+  } catch {
+    return crypto.randomUUID();
+  }
+
   if (!sessionId) {
     sessionId = crypto.randomUUID();
-    sessionStorage.setItem(SESSION_KEY, sessionId);
+    try {
+      sessionStorage.setItem(SESSION_KEY, sessionId);
+    } catch {
+      // Keep analytics non-blocking if storage is unavailable.
+    }
   }
+
   return sessionId;
 };
 
@@ -17,7 +29,7 @@ const sendEvent = (eventType: string, videoUnit?: number, useBeacon = false) => 
     session_id: getSessionId(),
     event_type: eventType,
     path: window.location.pathname,
-    video_unit: videoUnit || null,
+    video_unit: videoUnit ?? null,
     seconds_since_start: getSecondsSinceStart(),
     referrer: document.referrer || null,
   };
@@ -40,18 +52,23 @@ const sendEvent = (eventType: string, videoUnit?: number, useBeacon = false) => 
 export const startAnalytics = () => {
   sendEvent('start');
 
-  // Heartbeat every 15 seconds while visible
   const heartbeatInterval = setInterval(() => {
     if (document.visibilityState === 'visible') {
       sendEvent('heartbeat');
     }
   }, 15000);
 
-  // End event on pagehide
-  window.addEventListener('pagehide', () => {
+  const handlePageHide = () => {
     sendEvent('end', undefined, true);
     clearInterval(heartbeatInterval);
-  });
+  };
+
+  window.addEventListener('pagehide', handlePageHide);
+
+  return () => {
+    clearInterval(heartbeatInterval);
+    window.removeEventListener('pagehide', handlePageHide);
+  };
 };
 
 export const trackVideoPlay = (unit: number) => sendEvent('video_play', unit);

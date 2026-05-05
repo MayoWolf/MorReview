@@ -16,6 +16,7 @@ const Sidebar: React.FC<SidebarProps> = ({ units, currentUnitId, onSelectUnit })
         {units.map((unit) => (
           <li key={unit.id}>
             <button
+              type="button"
               className={`unit-button ${unit.id === currentUnitId ? 'active' : ''}`}
               onClick={() => onSelectUnit(unit)}
             >
