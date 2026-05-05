@@ -68,14 +68,14 @@ R2_ACCOUNT_ID=your_cloudflare_account_id
 R2_BUCKET_NAME=your_private_r2_bucket_name
 R2_ACCESS_KEY_ID=your_r2_access_key_id
 R2_SECRET_ACCESS_KEY=your_r2_secret_access_key
-R2_SIGNED_URL_EXPIRES_SECONDS=3600
-R2_UNIT_1_VIDEO_KEY=videos/Unit1.mp4
-R2_UNIT_2_VIDEO_KEY=videos/Unit2.mp4
-R2_UNIT_3_VIDEO_KEY=videos/Unit3.mp4
-R2_UNIT_4_VIDEO_KEY=videos/Unit4.mp4
-R2_UNIT_5_VIDEO_KEY=videos/Unit5.mp4
-R2_UNIT_6_VIDEO_KEY=videos/Unit6.mp4
-R2_UNIT_7_VIDEO_KEY=videos/Unit7.mp4
+R2_SIGNED_URL_EXPIRES_SECONDS=number_of_seconds
+R2_UNIT_1_VIDEO_KEY=unit_1_object_key
+R2_UNIT_2_VIDEO_KEY=unit_2_object_key
+R2_UNIT_3_VIDEO_KEY=unit_3_object_key
+R2_UNIT_4_VIDEO_KEY=unit_4_object_key
+R2_UNIT_5_VIDEO_KEY=unit_5_object_key
+R2_UNIT_6_VIDEO_KEY=unit_6_object_key
+R2_UNIT_7_VIDEO_KEY=unit_7_object_key
 ```
 
 The `R2_UNIT_*_VIDEO_KEY` values are object keys inside the bucket, not public URLs. The signed URL still appears in browser network tools while the video plays, but it expires after `R2_SIGNED_URL_EXPIRES_SECONDS`.
