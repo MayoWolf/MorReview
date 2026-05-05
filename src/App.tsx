@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import Sidebar from './components/Sidebar'
 import VideoPlayer from './components/VideoPlayer'
-import { getVideoUrlForUnit } from './config/videoUrls'
 import { startAnalytics, trackUnitSelect } from './lib/analytics'
 
 export interface Topic {
@@ -14,7 +13,6 @@ export interface Topic {
 export interface Unit {
   id: number;
   title: string;
-  videoUrl: string;
   description: string;
   topics: Topic[];
 }
@@ -23,7 +21,6 @@ const units: Unit[] = [
   { 
     id: 1, 
     title: 'Unit 1: Thinking Geographically', 
-    videoUrl: getVideoUrlForUnit(1), 
     description: 'Learn how geographers use maps and data to depict relationships of time, space, and scale.',
     topics: [
       { id: '1.1', name: 'Introduction to Maps', concepts: ['Reference vs thematic maps', 'Absolute and relative distance', 'Map projections and distortion'] },
@@ -38,7 +35,6 @@ const units: Unit[] = [
   { 
     id: 2, 
     title: 'Unit 2: Population and Migration Patterns and Processes', 
-    videoUrl: getVideoUrlForUnit(2), 
     description: 'Analyze patterns associated with human populations and their movement.',
     topics: [
       { id: '2.1', name: 'Population Distribution', concepts: ['Physical and human factors of distribution', 'Scales of analysis'] },
@@ -58,7 +54,6 @@ const units: Unit[] = [
   { 
     id: 3, 
     title: 'Unit 3: Cultural Patterns and Processes', 
-    videoUrl: getVideoUrlForUnit(3), 
     description: 'Focus on cultural patterns that create recognized identities.',
     topics: [
       { id: '3.1', name: 'Introduction to Culture', concepts: ['Shared practices, technologies, and behaviors', 'Relativism vs. ethnocentrism'] },
@@ -74,7 +69,6 @@ const units: Unit[] = [
   { 
     id: 4, 
     title: 'Unit 4: Political Patterns and Processes', 
-    videoUrl: getVideoUrlForUnit(4), 
     description: 'Explore the political organization of the world.',
     topics: [
       { id: '4.1', name: 'Introduction to Political Geography', concepts: ['Independent states, nations, and nation-states', 'Stateless nations and autonomous regions'] },
@@ -92,7 +86,6 @@ const units: Unit[] = [
   { 
     id: 5, 
     title: 'Unit 5: Agriculture and Rural Land-Use Patterns and Processes', 
-    videoUrl: getVideoUrlForUnit(5), 
     description: 'Investigate the origins and evolution of agriculture.',
     topics: [
       { id: '5.1', name: 'Introduction to Agriculture', concepts: ['Intensive vs. extensive farming', 'Mediterranean and tropical climates'] },
@@ -112,7 +105,6 @@ const units: Unit[] = [
   { 
     id: 6, 
     title: 'Unit 6: Cities and Urban Land-Use Patterns and Processes', 
-    videoUrl: getVideoUrlForUnit(6), 
     description: 'Address the origins and challenges of urban settlements.',
     topics: [
       { id: '6.1', name: 'The Origin and Influences of Urbanization', concepts: ['Site and situation', 'Site influences on function and growth'] },
@@ -131,7 +123,6 @@ const units: Unit[] = [
   { 
     id: 7, 
     title: 'Unit 7: Industrial and Economic Development Patterns and Processes', 
-    videoUrl: getVideoUrlForUnit(7), 
     description: 'Understand the origins and role of industry in global development.',
     topics: [
       { id: '7.1', name: 'The Industrial Revolution', concepts: ['New technologies and natural resources', 'Urbanization and class structure changes'] },

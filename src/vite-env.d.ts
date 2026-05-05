@@ -1,15 +1,1 @@
 /// <reference types="vite/client" />
-
-interface ImportMetaEnv {
-  readonly VITE_UNIT_1_VIDEO_URL?: string;
-  readonly VITE_UNIT_2_VIDEO_URL?: string;
-  readonly VITE_UNIT_3_VIDEO_URL?: string;
-  readonly VITE_UNIT_4_VIDEO_URL?: string;
-  readonly VITE_UNIT_5_VIDEO_URL?: string;
-  readonly VITE_UNIT_6_VIDEO_URL?: string;
-  readonly VITE_UNIT_7_VIDEO_URL?: string;
-}
-
-interface ImportMeta {
-  readonly env: ImportMetaEnv;
-}

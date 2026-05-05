@@ -168,9 +168,8 @@ const getVideoMetadata = (video?: HTMLVideoElement): AnalyticsMetadata => {
   };
 };
 
-const getUnitMetadata = (unitTitle: string, videoUrl: string) => ({
+const getUnitMetadata = (unitTitle: string) => ({
   unit_title: unitTitle,
-  video_url: videoUrl,
 });
 
 const sendEvent = (
@@ -243,13 +242,12 @@ export const trackUnitSelect = (unit: number, title: string) => {
 export const trackVideoLoaded = (
   unit: number,
   unitTitle: string,
-  videoUrl: string,
   video: HTMLVideoElement,
 ) => {
   sendEvent('video_loaded', {
     videoUnit: unit,
     metadata: {
-      ...getUnitMetadata(unitTitle, videoUrl),
+      ...getUnitMetadata(unitTitle),
       ...getVideoMetadata(video),
     },
   });
@@ -258,13 +256,12 @@ export const trackVideoLoaded = (
 export const trackVideoPlay = (
   unit: number,
   unitTitle: string,
-  videoUrl: string,
   video: HTMLVideoElement,
 ) => {
   sendEvent('video_play', {
     videoUnit: unit,
     metadata: {
-      ...getUnitMetadata(unitTitle, videoUrl),
+      ...getUnitMetadata(unitTitle),
       ...getVideoMetadata(video),
     },
   });
@@ -273,7 +270,6 @@ export const trackVideoPlay = (
 export const trackVideoPause = (
   unit: number,
   unitTitle: string,
-  videoUrl: string,
   video: HTMLVideoElement,
 ) => {
   if (video.ended) {
@@ -283,7 +279,7 @@ export const trackVideoPause = (
   sendEvent('video_pause', {
     videoUnit: unit,
     metadata: {
-      ...getUnitMetadata(unitTitle, videoUrl),
+      ...getUnitMetadata(unitTitle),
       ...getVideoMetadata(video),
     },
   });
@@ -292,13 +288,12 @@ export const trackVideoPause = (
 export const trackVideoEnded = (
   unit: number,
   unitTitle: string,
-  videoUrl: string,
   video: HTMLVideoElement,
 ) => {
   sendEvent('video_ended', {
     videoUnit: unit,
     metadata: {
-      ...getUnitMetadata(unitTitle, videoUrl),
+      ...getUnitMetadata(unitTitle),
       ...getVideoMetadata(video),
       video_percent_watched: 100,
     },
@@ -308,7 +303,6 @@ export const trackVideoEnded = (
 export const trackVideoProgress = (
   unit: number,
   unitTitle: string,
-  videoUrl: string,
   video: HTMLVideoElement,
   sentMilestones: Set<number>,
 ) => {
@@ -326,7 +320,7 @@ export const trackVideoProgress = (
       sendEvent('video_progress', {
         videoUnit: unit,
         metadata: {
-          ...getUnitMetadata(unitTitle, videoUrl),
+          ...getUnitMetadata(unitTitle),
           ...getVideoMetadata(video),
           video_milestone_percent: milestone,
         },

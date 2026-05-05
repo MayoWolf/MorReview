@@ -33,6 +33,12 @@ Start the local dev server:
 npm run dev
 ```
 
+Because videos are served through a Netlify Function, use Netlify Dev when you need local video playback:
+
+```bash
+netlify dev
+```
+
 Create a production build:
 
 ```bash
@@ -45,27 +51,36 @@ Preview the production build locally:
 npm run preview
 ```
 
-## Video URL Configuration
+## Private Video Configuration
 
-Video URLs are provided through environment variables so they do not live in the source code. For local development, create a `.env.local` file from `.env.example`:
+Videos are served through short-lived signed Cloudflare R2 URLs. The browser asks the Netlify function at `/.netlify/functions/video-url?unit=1` for a temporary playback URL, and the source code does not include public video URLs. The R2 bucket should be private, with public access disabled.
+
+For local development, create a `.env.local` file from `.env.example`:
 
 ```bash
 cp .env.example .env.local
 ```
 
-Then fill in:
+Set these private environment variables locally and in Netlify:
 
 ```bash
-VITE_UNIT_1_VIDEO_URL=...
-VITE_UNIT_2_VIDEO_URL=...
-VITE_UNIT_3_VIDEO_URL=...
-VITE_UNIT_4_VIDEO_URL=...
-VITE_UNIT_5_VIDEO_URL=...
-VITE_UNIT_6_VIDEO_URL=...
-VITE_UNIT_7_VIDEO_URL=...
+R2_ACCOUNT_ID=your_cloudflare_account_id
+R2_BUCKET_NAME=your_private_r2_bucket_name
+R2_ACCESS_KEY_ID=your_r2_access_key_id
+R2_SECRET_ACCESS_KEY=your_r2_secret_access_key
+R2_SIGNED_URL_EXPIRES_SECONDS=3600
+R2_UNIT_1_VIDEO_KEY=videos/Unit1.mp4
+R2_UNIT_2_VIDEO_KEY=videos/Unit2.mp4
+R2_UNIT_3_VIDEO_KEY=videos/Unit3.mp4
+R2_UNIT_4_VIDEO_KEY=videos/Unit4.mp4
+R2_UNIT_5_VIDEO_KEY=videos/Unit5.mp4
+R2_UNIT_6_VIDEO_KEY=videos/Unit6.mp4
+R2_UNIT_7_VIDEO_KEY=videos/Unit7.mp4
 ```
 
-Set the same variables in Netlify for production builds. These variables keep the URLs out of git, but because browser video playback needs the final URL, they are still visible to someone viewing network requests in the browser.
+The `R2_UNIT_*_VIDEO_KEY` values are object keys inside the bucket, not public URLs. The signed URL still appears in browser network tools while the video plays, but it expires after `R2_SIGNED_URL_EXPIRES_SECONDS`.
+
+Create an R2 API token/access key with object read access to the video bucket. Do not use `VITE_` prefixes for these variables.
 
 ## Project Structure
 
@@ -82,6 +97,7 @@ src/
 netlify/
   functions/
     analytics.ts             Supabase analytics event ingestion
+    video-url.ts             Short-lived R2 signed video URL generation
 public/
   icon.jpg                   Site icon
 ```

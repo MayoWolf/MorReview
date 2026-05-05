@@ -15,44 +15,77 @@ interface VideoPlayerProps {
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ unit }) => {
   const progressMilestones = useRef(new Set<number>());
+  const [videoUrl, setVideoUrl] = React.useState<string | null>(null);
+  const [videoError, setVideoError] = React.useState<string | null>(null);
 
   useEffect(() => {
     progressMilestones.current.clear();
+    setVideoUrl(null);
+    setVideoError(null);
+
+    const controller = new AbortController();
+
+    fetch(`/.netlify/functions/video-url?unit=${unit.id}`, {
+      signal: controller.signal,
+    })
+      .then(async (response) => {
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Unable to load this video.');
+        }
+
+        setVideoUrl(data.url);
+      })
+      .catch((err) => {
+        if (err instanceof DOMException && err.name === 'AbortError') {
+          return;
+        }
+
+        setVideoError(err instanceof Error ? err.message : 'Unable to load this video.');
+      });
+
+    return () => controller.abort();
   }, [unit.id]);
 
   return (
     <div className="video-player-container">
       <div className="video-wrapper">
-        <video 
-          key={unit.videoUrl} 
-          controls 
-          autoPlay 
-          className="main-video"
-          onLoadedMetadata={(event) => (
-            trackVideoLoaded(unit.id, unit.title, unit.videoUrl, event.currentTarget)
-          )}
-          onPlay={(event) => (
-            trackVideoPlay(unit.id, unit.title, unit.videoUrl, event.currentTarget)
-          )}
-          onPause={(event) => (
-            trackVideoPause(unit.id, unit.title, unit.videoUrl, event.currentTarget)
-          )}
-          onTimeUpdate={(event) => (
-            trackVideoProgress(
-              unit.id,
-              unit.title,
-              unit.videoUrl,
-              event.currentTarget,
-              progressMilestones.current,
-            )
-          )}
-          onEnded={(event) => (
-            trackVideoEnded(unit.id, unit.title, unit.videoUrl, event.currentTarget)
-          )}
-        >
-          <source src={unit.videoUrl} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+        {videoUrl ? (
+          <video 
+            key={videoUrl} 
+            controls 
+            autoPlay 
+            className="main-video"
+            onLoadedMetadata={(event) => (
+              trackVideoLoaded(unit.id, unit.title, event.currentTarget)
+            )}
+            onPlay={(event) => (
+              trackVideoPlay(unit.id, unit.title, event.currentTarget)
+            )}
+            onPause={(event) => (
+              trackVideoPause(unit.id, unit.title, event.currentTarget)
+            )}
+            onTimeUpdate={(event) => (
+              trackVideoProgress(
+                unit.id,
+                unit.title,
+                event.currentTarget,
+                progressMilestones.current,
+              )
+            )}
+            onEnded={(event) => (
+              trackVideoEnded(unit.id, unit.title, event.currentTarget)
+            )}
+          >
+            <source src={videoUrl} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        ) : (
+          <div className="video-state" role="status">
+            {videoError || 'Loading video...'}
+          </div>
+        )}
       </div>
       <div className="unit-info">
         <h2 className="unit-title">{unit.title}</h2>
