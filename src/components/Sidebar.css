@@ -1,0 +1,113 @@
+.sidebar {
+  width: 340px;
+  background-color: #fff;
+  border-right: 1px solid var(--map-border);
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.02);
+}
+
+.sidebar-title {
+  padding: 2.5rem 1.5rem 1rem 1.5rem;
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--map-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 800;
+  border-bottom: 2px solid var(--map-ivory);
+}
+
+.unit-list {
+  list-style: none;
+  padding: 1rem;
+  margin: 0;
+  overflow-y: auto;
+}
+
+.unit-button {
+  width: 100%;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 0.75rem;
+  border: 1px solid var(--map-border);
+  background: var(--map-ivory);
+  text-align: left;
+  cursor: pointer;
+  border-radius: var(--radius-map);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.unit-button:hover {
+  background-color: #fff;
+  border-color: var(--aphug-gold);
+  transform: translateX(5px);
+}
+
+.unit-button.active {
+  background-color: #fff;
+  border-color: var(--aphug-dark);
+  border-width: 2px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.unit-button.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 20%;
+  height: 60%;
+  width: 5px;
+  background: var(--aphug-gold);
+  border-radius: 0 4px 4px 0;
+}
+
+.unit-number {
+  font-size: 0.7rem;
+  font-weight: 900;
+  color: var(--aphug-dark);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.3rem;
+  display: block;
+}
+
+.unit-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--map-text);
+  line-height: 1.3;
+}
+
+.unit-button.active .unit-name {
+  color: #000;
+}
+
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 280px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--map-border);
+  }
+  
+  .unit-list {
+    display: flex;
+    overflow-x: auto;
+    padding: 1rem;
+    gap: 1rem;
+  }
+  
+  .unit-button {
+    min-width: 260px;
+    margin-bottom: 0;
+  }
+}

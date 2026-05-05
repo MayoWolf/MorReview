@@ -1,0 +1,53 @@
+:root {
+  /* Official APHUG & Modern Cartography Palette */
+  --aphug-gold: #FFB81C; /* Official AP Gold */
+  --aphug-dark: #1a1a1a; /* Official AP Black */
+  
+  --map-ivory: #fdfaf5;
+  --map-green: #2c5e4f;
+  --map-blue: #3d7ea6;
+  --map-border: #e0d7c6;
+  --map-text: #1a1a1a;
+  --map-text-muted: #5a554d;
+  
+  --shadow-paper: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --radius-map: 12px;
+  
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  background-color: var(--map-ivory);
+  color: var(--map-text);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  background-image: 
+    radial-gradient(var(--map-border) 0.5px, transparent 0.5px),
+    linear-gradient(to right, rgba(0,0,0,0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0,0,0,0.02) 1px, transparent 1px);
+  background-size: 24px 24px, 48px 48px, 48px 48px;
+}
+
+#root {
+  width: 100%;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--map-ivory);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--aphug-gold);
+  border: 3px solid var(--map-ivory);
+  border-radius: 10px;
+}
