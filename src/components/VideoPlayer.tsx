@@ -1,13 +1,25 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Unit } from '../App';
 import './VideoPlayer.css';
-import { trackVideoPlay, trackVideoPause, trackVideoEnded } from '../lib/analytics';
+import {
+  trackVideoEnded,
+  trackVideoLoaded,
+  trackVideoPause,
+  trackVideoPlay,
+  trackVideoProgress,
+} from '../lib/analytics';
 
 interface VideoPlayerProps {
   unit: Unit;
 }
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ unit }) => {
+  const progressMilestones = useRef(new Set<number>());
+
+  useEffect(() => {
+    progressMilestones.current.clear();
+  }, [unit.id]);
+
   return (
     <div className="video-player-container">
       <div className="video-wrapper">
@@ -16,9 +28,27 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ unit }) => {
           controls 
           autoPlay 
           className="main-video"
-          onPlay={() => trackVideoPlay(unit.id)}
-          onPause={() => trackVideoPause(unit.id)}
-          onEnded={() => trackVideoEnded(unit.id)}
+          onLoadedMetadata={(event) => (
+            trackVideoLoaded(unit.id, unit.title, unit.videoUrl, event.currentTarget)
+          )}
+          onPlay={(event) => (
+            trackVideoPlay(unit.id, unit.title, unit.videoUrl, event.currentTarget)
+          )}
+          onPause={(event) => (
+            trackVideoPause(unit.id, unit.title, unit.videoUrl, event.currentTarget)
+          )}
+          onTimeUpdate={(event) => (
+            trackVideoProgress(
+              unit.id,
+              unit.title,
+              unit.videoUrl,
+              event.currentTarget,
+              progressMilestones.current,
+            )
+          )}
+          onEnded={(event) => (
+            trackVideoEnded(unit.id, unit.title, unit.videoUrl, event.currentTarget)
+          )}
         >
           <source src={unit.videoUrl} type="video/mp4" />
           Your browser does not support the video tag.

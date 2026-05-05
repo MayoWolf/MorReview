@@ -8,14 +8,18 @@ type AnalyticsPayload = {
   video_unit?: unknown;
   seconds_since_start?: unknown;
   referrer?: unknown;
+  metadata?: unknown;
 };
 
 const validEventTypes = new Set([
   'start',
   'heartbeat',
   'end',
+  'unit_select',
+  'video_loaded',
   'video_play',
   'video_pause',
+  'video_progress',
   'video_ended',
 ]);
 
@@ -55,6 +59,23 @@ const asNullableString = (value: unknown) => (
 const asNullableNumber = (value: unknown) => (
   typeof value === 'number' && Number.isFinite(value) ? value : null
 );
+const asMetadata = (value: unknown) => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return {};
+  }
+
+  try {
+    return JSON.parse(JSON.stringify(value)) as Record<string, unknown>;
+  } catch {
+    return {};
+  }
+};
+
+const isMissingMetadataColumn = (error: { code?: string; message?: string }) => {
+  const message = (error.message ?? '').toLowerCase();
+
+  return error.code === 'PGRST204' || error.code === '42703' || message.includes('metadata');
+};
 
 export const handler: Handler = async (event) => {
   if (event.httpMethod !== 'POST') {
@@ -84,22 +105,35 @@ export const handler: Handler = async (event) => {
     const { supabaseUrl, supabaseServiceKey } = getRequiredEnv();
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     const userAgent = event.headers['user-agent'] || 'unknown';
-    
+    const metadata = {
+      ...asMetadata(data.metadata),
+      server_received_at: new Date().toISOString(),
+    };
+    const row = {
+      session_id: sessionId,
+      event_type: eventType,
+      path,
+      video_unit: asNullableNumber(data.video_unit),
+      seconds_since_start: secondsSinceStart,
+      referrer: asNullableString(data.referrer),
+      user_agent: userAgent,
+    };
+
     const { error } = await supabase
       .from('analytics_events')
-      .insert([
-        {
-          session_id: sessionId,
-          event_type: eventType,
-          path,
-          video_unit: asNullableNumber(data.video_unit),
-          seconds_since_start: secondsSinceStart,
-          referrer: asNullableString(data.referrer),
-          user_agent: userAgent,
-        },
-      ]);
+      .insert([{ ...row, metadata }]);
 
-    if (error) throw error;
+    if (error) {
+      if (isMissingMetadataColumn(error)) {
+        const { error: fallbackError } = await supabase
+          .from('analytics_events')
+          .insert([row]);
+
+        if (fallbackError) throw fallbackError;
+      } else {
+        throw error;
+      }
+    }
 
     return jsonResponse(200, { message: 'Event logged' });
   } catch (err) {

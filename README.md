@@ -89,8 +89,31 @@ create table analytics_events (
   seconds_since_start integer,
   referrer text,
   user_agent text,
+  metadata jsonb not null default '{}'::jsonb,
   created_at timestamptz default now()
 );
+
+create index analytics_events_session_created_at_idx
+  on analytics_events (session_id, created_at desc);
+
+create index analytics_events_event_created_at_idx
+  on analytics_events (event_type, created_at desc);
+
+create index analytics_events_video_unit_created_at_idx
+  on analytics_events (video_unit, created_at desc);
+
+create index analytics_events_metadata_idx
+  on analytics_events using gin (metadata);
+```
+
+If you already have the table from an older version, add the richer metadata column with:
+
+```sql
+alter table analytics_events
+  add column if not exists metadata jsonb not null default '{}'::jsonb;
+
+create index if not exists analytics_events_metadata_idx
+  on analytics_events using gin (metadata);
 ```
 
 Tracked event types:
@@ -98,9 +121,23 @@ Tracked event types:
 - `start`
 - `heartbeat`
 - `end`
+- `unit_select`
+- `video_loaded`
 - `video_play`
 - `video_pause`
+- `video_progress`
 - `video_ended`
+
+The `metadata` JSON includes privacy-conscious product analytics details such as:
+
+- Stable page ID for the current page load
+- Full page URL, title, query string, and hash
+- Viewport, screen size, pixel ratio, language, timezone, and color scheme
+- Online/visibility state, visible seconds, and max scroll depth
+- Network quality hints when the browser exposes them
+- Video duration, current time, percent watched, volume, mute state, playback rate, and watch milestones at 25%, 50%, 75%, and 90%
+
+The Netlify function falls back to the original core columns if Supabase has not been migrated to include `metadata`, but the richer analytics require the `metadata jsonb` column.
 
 ## Deployment
 

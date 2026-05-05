@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import Sidebar from './components/Sidebar'
 import VideoPlayer from './components/VideoPlayer'
-import { startAnalytics } from './lib/analytics'
+import { startAnalytics, trackUnitSelect } from './lib/analytics'
 
 export interface Topic {
   id: string;
@@ -152,6 +152,11 @@ function App() {
     return startAnalytics();
   }, []);
 
+  const handleSelectUnit = (unit: Unit) => {
+    trackUnitSelect(unit.id, unit.title);
+    setCurrentUnit(unit);
+  };
+
   return (
     <div className="app-container">
       <header className="app-header">
@@ -161,7 +166,7 @@ function App() {
         </div>
       </header>
       <div className="main-content">
-        <Sidebar units={units} currentUnitId={currentUnit.id} onSelectUnit={setCurrentUnit} />
+        <Sidebar units={units} currentUnitId={currentUnit.id} onSelectUnit={handleSelectUnit} />
         <main className="video-area">
           <VideoPlayer unit={currentUnit} />
         </main>
