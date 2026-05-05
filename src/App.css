@@ -15,6 +15,7 @@
   border-bottom: 5px solid var(--aphug-gold);
   z-index: 100;
   box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  flex-shrink: 0;
 }
 
 .app-header h1 {
@@ -46,22 +47,47 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  -webkit-overflow-scrolling: touch;
 }
 
+/* Tablet / Small Desktop */
 @media (max-width: 1024px) {
   .app-header {
     padding: 1rem 1.5rem;
   }
+  
+  .video-area {
+    padding: 2rem 1.5rem;
+  }
 }
 
+/* Mobile */
 @media (max-width: 768px) {
-  .main-content {
-    flex-direction: column;
+  .app-container {
+    height: 100vh; /* Keep fixed height to allow internal scrolling */
   }
-  
+
   .app-header {
+    padding: 0.8rem 1rem;
     text-align: center;
     flex-direction: column;
     gap: 0.2rem;
+  }
+
+  .app-header h1 {
+    font-size: 1.2rem;
+  }
+
+  .app-header p {
+    font-size: 0.7rem;
+  }
+
+  .main-content {
+    flex-direction: column;
+  }
+
+  .video-area {
+    padding: 1.5rem 1rem;
+    overflow-x: hidden;
   }
 }

@@ -135,14 +135,30 @@
 
 @media (max-width: 768px) {
   .unit-info {
-    padding: 2rem;
+    padding: 1.5rem;
   }
   
   .unit-title {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
+    margin-bottom: 0.8rem;
   }
   
   .unit-description {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .topics-title {
+    font-size: 0.85rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .topics-grid {
+    grid-template-columns: 1fr; /* Single column on mobile */
+    gap: 1rem;
+  }
+
+  .topic-card {
+    padding: 1rem;
   }
 }
